@@ -1,0 +1,15 @@
+{
+    "core": {
+        "plugins_to_run": [
+            { 
+                "name": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "127.0.0.1",
+                    "mode": "all"
+                }
+            }
+        ],
+        "write_mode": "File"
+    }
+}

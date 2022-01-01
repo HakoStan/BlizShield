@@ -1,0 +1,33 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run Core Development",
+            "type": "python",
+            "request": "launch",
+            "module": "Clients",
+            "justMyCode": false,
+            "args": [
+                "--core"
+            ],
+            "env": {
+                "CONFIG_FILE": "development.json"
+            }
+        },
+        {
+            "name": "Run Core Production",
+            "type": "python",
+            "request": "launch",
+            "module": "Clients",
+            "args": [
+                "--core"
+            ],
+            "env": {
+                "CONFIG_FILE": "production.json"
+            }
+        }
+    ]
+}
