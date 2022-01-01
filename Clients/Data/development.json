@@ -6,10 +6,11 @@
                 "type": "Python", 
                 "config": {
                     "ip": "127.0.0.1",
-                    "mode": "all"
+                    "start_port": 80,
+                    "end_port": 82
                 }
             }
         ],
-        "write_mode": "File"
+        "write_mode": "file"
     }
 }
