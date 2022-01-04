@@ -20,7 +20,7 @@ class Core:
         plugins_to_run: list[dict],
         write_mode: str) -> None:
         logger.info("Initiating Core")
-        
+
         if write_mode.lower() not in ALLOWED_WRITE_MODES:
             raise Exception(f"Write Mode {write_mode} is not allowed!")
         self.__write_mode = write_mode
@@ -56,7 +56,7 @@ class Core:
             plugin_type = plugin["type"].lower()
             if plugin_type not in ALLOWED_TYPES:
                 raise ValueError(f"Plugin Type {plugin_type} is not allowed")
-    
+
             result = {"Plugin": plugin["name"], "Type": plugin_type}
             if plugin_type == "python":
                 if "config" in plugin.keys():
@@ -67,4 +67,3 @@ class Core:
             results.append(result)
 
         await self.__write_results(results)
-

@@ -28,6 +28,17 @@
             "env": {
                 "CONFIG_FILE": "production.json"
             }
+        },
+        {
+            "name": "Debug Tests",
+            "type": "python",
+            "request": "launch",
+            "module": "pytest",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "CONFIG_FILE": "development.json"
+            }        
         }
     ]
 }
