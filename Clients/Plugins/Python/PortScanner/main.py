@@ -1,5 +1,6 @@
 import logging
 import socket
+import datetime
 
 logger = logging.getLogger(__name__.split('.')[-1])
 
@@ -42,21 +43,22 @@ class PortScanner:
     def execute(self) -> list[dict]:
         data = []
         for port in range(self.__start_port, self.__end_port):
-            port_info = {"ip": self.__ip, "port": port, "tcp": False, "udp": False}
+            scan_timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone().isoformat()
 
             try:
-                port_info["tcp"] = self.__tcp_scan(self.__ip, port)
+                tcp_port_info = {"ip": self.__ip, "port": port, "protocol": "TCP", "port_open": self.__tcp_scan(self.__ip, port), "@timestamp": scan_timestamp}
             except Exception as ex:
                 logger.error(f"Exception Occurred Scanning TCP Port {self.__ip}:{port}")
                 logger.error(f"{str(ex)}")
 
             try:
-                port_info["udp"] = self.__udp_scan(self.__ip, port)
+                self.__udp_scan(self.__ip, port)
+                udp_port_info = {"ip": self.__ip, "port": port, "protocol": "TCP", "port_open": self.__udp_scan(self.__ip, port), "@timestamp": scan_timestamp}
             except Exception as ex:
                 logger.error(f"Exception Occurred Scanning UDP Port {self.__ip}:{port}")
                 logger.error(f"{str(ex)}")
             
-            data.append(port_info)
+            data.extend([tcp_port_info, udp_port_info])
         return data
 
 
