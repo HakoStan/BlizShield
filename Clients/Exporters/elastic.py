@@ -11,7 +11,7 @@ def results_gen(results: list) -> dict:
         plugin_config = result['Config']
         for scan in result['Result']:
             yield {
-                '_index': f'{plugin_data.lower()}-{datetime.datetime.now().strftime("%m-%y")}',
+                '_index': f'plugin-{plugin_data.lower()}-{datetime.datetime.now().strftime("%m-%y")}',
                 '_type': 'document',
                 '_id': str(uuid.uuid4()),
                 'plugin': plugin_data,
