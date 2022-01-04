@@ -52,12 +52,10 @@ class PortScanner:
                 logger.error(f"{str(ex)}")
 
             try:
-                self.__udp_scan(self.__ip, port)
-                udp_port_info = {"ip": self.__ip, "port": port, "protocol": "TCP", "port_open": self.__udp_scan(self.__ip, port), "@timestamp": scan_timestamp}
+                udp_port_info = {"ip": self.__ip, "port": port, "protocol": "UDP", "port_open": self.__udp_scan(self.__ip, port), "@timestamp": scan_timestamp}
             except Exception as ex:
                 logger.error(f"Exception Occurred Scanning UDP Port {self.__ip}:{port}")
                 logger.error(f"{str(ex)}")
-            
             data.extend([tcp_port_info, udp_port_info])
         return data
 

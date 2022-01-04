@@ -7,7 +7,9 @@ from .main import PortScanner
 def test_tcp_port_scan_false():
     port_scanner = PortScanner("127.0.0.1", 8080, 8081)
     result = port_scanner.execute()
-    assert result[0]["tcp"] == False
+
+    assert result[0]["protocol"] == "TCP"
+    assert result[0]["port_open"] == False
 
 
 def test_tcp_port_scan_true():
@@ -18,7 +20,8 @@ def test_tcp_port_scan_true():
     result = port_scanner.execute()
     s.close()
 
-    assert result[0]["tcp"] == True
+    assert result[0]["protocol"] == "TCP"
+    assert result[0]["port_open"] == True
 
 
 def udp_server():
@@ -34,7 +37,9 @@ def udp_server():
 def test_udp_port_scan_false():
     port_scanner = PortScanner("127.0.0.1", 8080, 8081)
     result = port_scanner.execute()
-    assert result[0]["udp"] == False
+
+    assert result[1]["protocol"] == "UDP"
+    assert result[1]["port_open"] == False
 
 
 def test_udp_port_scan_true():
@@ -43,4 +48,6 @@ def test_udp_port_scan_true():
     th.start()
     result = port_scanner.execute()
     th.join()
-    assert result[0]["udp"] == True
+
+    assert result[1]["protocol"] == "UDP"
+    assert result[1]["port_open"] == True
