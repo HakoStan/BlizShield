@@ -14,11 +14,10 @@ def results_gen(results: list) -> dict:
                 '_index': f'{plugin_data.lower()}-{datetime.datetime.now().strftime("%m-%y")}',
                 '_type': 'document',
                 '_id': str(uuid.uuid4()),
-                    'plugin': plugin_data,
-                    'plugin_type': plugin_type,
-                    'run_config': plugin_config,
-                    'result': scan,
-                    '@timestamp': datetime.datetime.now(datetime.timezone.utc).astimezone().isoformat()
+                'plugin': plugin_data,
+                'plugin_type': plugin_type,
+                'run_config': plugin_config,
+                **scan
             }
 
 
