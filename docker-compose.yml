@@ -21,6 +21,15 @@ services:
       - elk
     depends_on:
       - elasticsearch
+  
+  grafana:
+    image:  grafana/grafana:8.3.3
+    ports:
+        - "3000:3000"
+    volumes:
+        - "./grafana:/var/lib/grafana"
+    networks:
+      - elk
 
 networks:
   elk:

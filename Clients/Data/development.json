@@ -6,8 +6,8 @@
                 "type": "Python", 
                 "config": {
                     "ip": "127.0.0.1",
-                    "start_port": 80,
-                    "end_port": 82
+                    "start_port": 5601,
+                    "end_port": 5602
                 }
             },
             { 
@@ -15,8 +15,8 @@
                 "type": "Python", 
                 "config": {
                     "ip": "127.0.0.1",
-                    "start_port": 9200,
-                    "end_port": 9201
+                    "start_port": 3000,
+                    "end_port": 3001
                 }
             }
         ],
