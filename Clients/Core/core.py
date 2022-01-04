@@ -5,25 +5,32 @@ import importlib.machinery
 import importlib.util
 
 from ..Framework import utils
-from ..Exporters import elastic
+from ..Exporters.elastic import ElasticExporter
+from ..Exporters.file import FileExporter
 
 
 logger = logging.getLogger(__name__.split('.')[-1])
 
 
-RESULTS_FILE = r"C:\\temp\\Results.json"
 ALLOWED_TYPES = ["python"]
-ALLOWED_WRITE_MODES = ["file", "elastic"]
+ALLOWED_EXPORTERS = ["file", "elastic"]
 
 class Core:
     def __init__(self,
         plugins_to_run: list[dict],
-        write_mode: str) -> None:
+        exporters: list) -> None:
         logger.info("Initiating Core")
 
-        if write_mode.lower() not in ALLOWED_WRITE_MODES:
-            raise Exception(f"Write Mode {write_mode} is not allowed!")
-        self.__write_mode = write_mode
+        self.__exporters = []
+        # Initialize Exporters
+        for exporter in exporters:
+            exporter_type = exporter["type"]
+            if exporter_type not in ALLOWED_EXPORTERS:
+                raise Exception(f"Exporter {exporter_type} is not allowed!")
+            if exporter_type == "elastic":
+                self.__exporters.append(ElasticExporter(**exporter["config"]))
+            if exporter_type == "file":
+                self.__exporters.append(FileExporter(**exporter["config"]))
         self.__plugins_to_run = plugins_to_run
 
     async def __run_python_plugin(self,
@@ -41,13 +48,10 @@ class Core:
         logger.info(f"Running Module {name} with configuration {config}")
         return mod.run(config)
 
-    async def __write_results(self, results: list) -> None:
-        if self.__write_mode.lower() == "file":
-            with open(RESULTS_FILE, "w") as f:
-                f.write(json.dumps(results))
-        elif self.__write_mode.lower() == "elastic":
-            elastic.export(results)
-    
+    async def __export_results(self, results: list) -> None:
+        for exporter in self.__exporters:
+            exporter.export(results)
+
     async def run(self) -> None:
         results = []
         for plugin in self.__plugins_to_run:
@@ -66,4 +70,4 @@ class Core:
                     result["Result"] = await self.__run_python_plugin(plugin["name"])
             results.append(result)
 
-        await self.__write_results(results)
+        await self.__export_results(results)
