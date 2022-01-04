@@ -5,21 +5,89 @@
                 "name": "PortScanner", 
                 "type": "Python", 
                 "config": {
-                    "ip": "127.0.0.1",
-                    "start_port": 5601,
-                    "end_port": 5602
+                    "ip": "10.0.0.27",
+                    "start_port": 20,
+                    "end_port": 25
                 }
             },
             { 
                 "name": "PortScanner", 
                 "type": "Python", 
                 "config": {
-                    "ip": "127.0.0.1",
-                    "start_port": 3000,
-                    "end_port": 3001
+                    "ip": "10.0.0.27",
+                    "start_port": 80,
+                    "end_port": 81
+                }
+            },
+            { 
+                "name": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "10.0.0.27",
+                    "start_port": 443,
+                    "end_port": 446
+                }
+            },
+            { 
+                "name": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "142.250.186.110",
+                    "start_port": 80,
+                    "end_port": 81
+                }
+            },
+            { 
+                "name": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "142.250.186.110",
+                    "start_port": 443,
+                    "end_port": 448
+                }
+            },
+            { 
+                "name": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "10.0.0.1",
+                    "start_port": 20,
+                    "end_port": 30
+                }
+            },
+            { 
+                "name": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "23.210.254.113",
+                    "start_port": 443,
+                    "end_port": 446
+                }
+            },
+            { 
+                "name": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "23.210.254.113",
+                    "start_port": 80,
+                    "end_port": 83
                 }
             }
         ],
-        "write_mode": "elastic"
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            },
+            {
+                "type": "elastic",
+                "config": {
+                    "ip": "rabinovit.ch",
+                    "port": 9200
+                }
+            }
+        ]
     }
 }
