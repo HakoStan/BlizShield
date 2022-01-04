@@ -3,25 +3,31 @@ import datetime
 import elasticsearch
 from elasticsearch import helpers
 
-
-def results_gen(results: list) -> dict:
-    for result in results:
-        plugin_data = result['Plugin']
-        plugin_type = result['Type']
-        plugin_config = result['Config']
-        for scan in result['Result']:
-            yield {
-                '_index': f'plugin-{plugin_data.lower()}-{datetime.datetime.now().strftime("%m-%y")}',
-                '_type': 'document',
-                '_id': str(uuid.uuid4()),
-                'plugin': plugin_data,
-                'plugin_type': plugin_type,
-                'run_config': plugin_config,
-                **scan
-            }
+from .exporter import Exporter
 
 
-def export(results: list) -> None:
-    # TODO: change hard codded variables to config values
-    es = elasticsearch.Elasticsearch(hosts='127.0.0.1', port=9200)
-    helpers.bulk(es, results_gen(results))
+class ElasticExporter(Exporter):
+    def __init__(self, ip, port) -> None:
+        super().__init__()
+        self.__ip = ip
+        self.__port = port
+
+    def __results_gen(self, results: list) -> dict:
+        for result in results:
+            plugin_data = result['Plugin']
+            plugin_type = result['Type']
+            plugin_config = result['Config']
+            for scan in result['Result']:
+                yield {
+                    '_index': f'plugin-{plugin_data.lower()}-{datetime.datetime.now().strftime("%m-%y")}',
+                    '_type': 'document',
+                    '_id': str(uuid.uuid4()),
+                    'plugin': plugin_data,
+                    'plugin_type': plugin_type,
+                    'run_config': plugin_config,
+                    **scan
+                }
+
+    def export(self, results: list) -> None:
+        es = elasticsearch.Elasticsearch(hosts=self.__ip, port=self.__port)
+        helpers.bulk(es, self.__results_gen(results))
