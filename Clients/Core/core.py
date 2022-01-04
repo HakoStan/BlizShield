@@ -5,6 +5,7 @@ import importlib.machinery
 import importlib.util
 
 from ..Framework import utils
+from ..Exporters import elastic
 
 
 logger = logging.getLogger(__name__.split('.')[-1])
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__.split('.')[-1])
 
 RESULTS_FILE = r"C:\\temp\\Results.json"
 ALLOWED_TYPES = ["python"]
-ALLOWED_WRITE_MODES = ["file"]
+ALLOWED_WRITE_MODES = ["file", "elastic"]
 
 class Core:
     def __init__(self,
@@ -44,7 +45,9 @@ class Core:
         if self.__write_mode.lower() == "file":
             with open(RESULTS_FILE, "w") as f:
                 f.write(json.dumps(results))
-
+        elif self.__write_mode.lower() == "elastic":
+            elastic.export(results)
+    
     async def run(self) -> None:
         results = []
         for plugin in self.__plugins_to_run:

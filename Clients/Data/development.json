@@ -6,11 +6,20 @@
                 "type": "Python", 
                 "config": {
                     "ip": "127.0.0.1",
-                    "start_port": 80,
-                    "end_port": 82
+                    "start_port": 5601,
+                    "end_port": 5602
+                }
+            },
+            { 
+                "name": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "127.0.0.1",
+                    "start_port": 3000,
+                    "end_port": 3001
                 }
             }
         ],
-        "write_mode": "file"
+        "write_mode": "elastic"
     }
 }
