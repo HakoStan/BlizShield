@@ -1,76 +1,50 @@
 {
     "core": {
-        "plugins_to_run": [
+        "flow": [
             { 
-                "name": "PortScanner", 
+                "name": "Plugin1",
+                "plugin": "PortScanner", 
                 "type": "Python", 
                 "config": {
                     "ip": "10.0.0.27",
                     "start_port": 20,
                     "end_port": 25
-                }
+                },
+                "next": "Plugin2"
+            },
+            {
+                "name": "Plugin2",
+                "plugin": "PortScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "123.60.211.213",
+                    "start_port": 443,
+                    "end_port": 445
+                },
+                "next": [
+                    {
+                        "conditions": {
+                            "type": "eq",
+                            "key": "port_open",
+                            "value": false,
+                            "and": {
+                                "type": "ge",
+                                "key": "port",
+                                "value": 443  
+                            }
+                        },
+                        "true": "Plugin3"
+                    }
+                ]
             },
             { 
-                "name": "PortScanner", 
+                "name": "Plugin3",
+                "plugin": "PortScanner", 
                 "type": "Python", 
                 "config": {
                     "ip": "10.0.0.27",
-                    "start_port": 80,
-                    "end_port": 81
-                }
-            },
-            { 
-                "name": "PortScanner", 
-                "type": "Python", 
-                "config": {
-                    "ip": "10.0.0.27",
-                    "start_port": 443,
-                    "end_port": 446
-                }
-            },
-            { 
-                "name": "PortScanner", 
-                "type": "Python", 
-                "config": {
-                    "ip": "142.250.186.110",
-                    "start_port": 80,
-                    "end_port": 81
-                }
-            },
-            { 
-                "name": "PortScanner", 
-                "type": "Python", 
-                "config": {
-                    "ip": "142.250.186.110",
-                    "start_port": 443,
-                    "end_port": 448
-                }
-            },
-            { 
-                "name": "PortScanner", 
-                "type": "Python", 
-                "config": {
-                    "ip": "10.0.0.1",
                     "start_port": 20,
-                    "end_port": 30
-                }
-            },
-            { 
-                "name": "PortScanner", 
-                "type": "Python", 
-                "config": {
-                    "ip": "23.210.254.113",
-                    "start_port": 443,
-                    "end_port": 446
-                }
-            },
-            { 
-                "name": "PortScanner", 
-                "type": "Python", 
-                "config": {
-                    "ip": "23.210.254.113",
-                    "start_port": 80,
-                    "end_port": 83
+                    "end_port": 25
                 }
             }
         ],
@@ -79,13 +53,6 @@
                 "type": "file",
                 "config": {
                     "path": "C:\\temp\\results.json"
-                }
-            },
-            {
-                "type": "elastic",
-                "config": {
-                    "ip": "rabinovit.ch",
-                    "port": 9200
                 }
             }
         ]
