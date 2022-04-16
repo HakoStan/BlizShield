@@ -4,6 +4,7 @@ import datetime
 
 logger = logging.getLogger(__name__.split('.')[-1])
 
+
 class PortScanner:
     def __init__(self,
         ip: str,
