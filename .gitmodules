@@ -1,0 +1,3 @@
+[submodule "Clients/Plugins/Python/WordpressScanner/WPSeku"]
+	path = Clients/Plugins/Python/WordpressScanner/WPSeku
+	url = https://github.com/andripwn/WPSeku.git
