@@ -1,2 +1,5 @@
 elasticsearch
 python-nmap
+requests
+urllib3
+humanfriendly

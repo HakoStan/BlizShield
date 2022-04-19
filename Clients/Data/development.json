@@ -2,12 +2,12 @@
     "core": {
         "flow": [
             {
-                "name": "Plugin0-hostscanner",
-                "plugin": "HostScanner",
+                "name": "Plugin0-wordpress",
+                "plugin": "WordpressScanner",
                 "type": "Python",
                 "config": {
-                    "subnet": "10.0.0.1/24",
-                    "possible_ports": [22, 23, 80, 8080, 443, 445, 3389, 139, 23]
+                    "host": "http://138.68.90.29/",
+                    "api_token": "fH62Oxk9nhwtADF9fiEaoSaaIJi1hcEbG2688C2dctk"
                 },
                 "next": "Plugin1"
             },
@@ -49,12 +49,11 @@
             },
             { 
                 "name": "Plugin3",
-                "plugin": "PortScanner", 
+                "plugin": "HostScanner", 
                 "type": "Python", 
                 "config": {
-                    "ip": "10.0.0.27",
-                    "start_port": 20,
-                    "end_port": 25
+                    "subnet": "10.0.0.1/24",
+                    "possible_ports": [22, 23, 80, 8080, 443, 445, 3389, 139, 23]
                 }
             }
         ],
