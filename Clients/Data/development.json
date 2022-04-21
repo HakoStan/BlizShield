@@ -63,6 +63,13 @@
                 "config": {
                     "path": "C:\\temp\\results.json"
                 }
+            },
+            {
+                "type": "elastic",
+                "config": {
+                    "ip": "rabinovit.ch",
+                    "port": 9200
+                }
             }
         ]
     }

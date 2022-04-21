@@ -14,6 +14,7 @@ class ElasticExporter(Exporter):
 
     def __results_gen(self, results: list) -> dict:
         for result in results:
+            scan_timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone().isoformat()
             plugin_data = result['Plugin']
             plugin_type = result['Type']
             plugin_config = result['Config']
@@ -25,6 +26,7 @@ class ElasticExporter(Exporter):
                     'plugin': plugin_data,
                     'plugin_type': plugin_type,
                     'run_config': plugin_config,
+                    '@timestamp': scan_timestamp,
                     **scan
                 }
 

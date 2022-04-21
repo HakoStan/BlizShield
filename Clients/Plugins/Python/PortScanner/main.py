@@ -44,16 +44,19 @@ class PortScanner:
     def execute(self) -> list[dict]:
         data = []
         for port in range(self.__start_port, self.__end_port):
-            scan_timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone().isoformat()
-
             try:
-                tcp_port_info = {"ip": self.__ip, "port": port, "protocol": "TCP", "port_open": self.__tcp_scan(self.__ip, port), "@timestamp": scan_timestamp}
+                tcp_port_info = {"ip": self.__ip, "port": port, "protocol": "TCP", "port_open": self.__tcp_scan(self.__ip, port)}
+
+
+
+
+                
             except Exception as ex:
                 logger.error(f"Exception Occurred Scanning TCP Port {self.__ip}:{port}")
                 logger.error(f"{str(ex)}")
 
             try:
-                udp_port_info = {"ip": self.__ip, "port": port, "protocol": "UDP", "port_open": self.__udp_scan(self.__ip, port), "@timestamp": scan_timestamp}
+                udp_port_info = {"ip": self.__ip, "port": port, "protocol": "UDP", "port_open": self.__udp_scan(self.__ip, port)}
             except Exception as ex:
                 logger.error(f"Exception Occurred Scanning UDP Port {self.__ip}:{port}")
                 logger.error(f"{str(ex)}")
