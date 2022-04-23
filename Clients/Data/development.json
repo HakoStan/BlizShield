@@ -54,6 +54,58 @@
                 "config": {
                     "subnet": "10.0.0.1/24",
                     "possible_ports": [22, 23, 80, 8080, 443, 445, 3389, 139, 23]
+                },
+                "next": "Plugin4"
+            },
+            {
+                "name": "Plugin4",
+                "plugin": "FtpScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "admin",
+                    "password": "admin"
+                },
+                "next": "Plugin5"
+            },
+            {
+                "name": "Plugin5",
+                "plugin": "FtpScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "138.68.90.29"
+                },
+                "next": "Plugin6"
+            },
+            {
+                "name": "Plugin6",
+                "plugin": "FtpScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "10.0.0.26"
+                },
+                "next": "Plugin7"
+            },
+            {
+                "name": "Plugin7",
+                "plugin": "SmbScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "root",
+                    "password": "admin",
+                    "domain": "test"
+                },
+                "next": "Plugin8"
+            },
+            {
+                "name": "Plugin8",
+                "plugin": "SmbScanner", 
+                "type": "Python", 
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "root",
+                    "password": "root"
                 }
             }
         ],
