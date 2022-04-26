@@ -1,5 +1,6 @@
 import logging
 import subprocess
+import json
 
 
 logger = logging.getLogger(__name__.split('.')[-1])
@@ -22,25 +23,28 @@ class WordpressScanner:
         # For windows you will also need libcurl.dll in $PATH
         output = ""
         try:
-            output = subprocess.check_output(f"wpscan --url {self.__host} --disable-tls-checks --api-token {self.__api_token}".split(' '), shell=True)
+            cmd = f"wpscan -f json --no-update --url {self.__host} --disable-tls-checks --api-token {self.__api_token}"
+            logging.info(f"Executing command: {cmd}")
+            output = subprocess.check_output(cmd.split(' '), shell=True)
         except subprocess.CalledProcessError as wpscan_err:
             output = wpscan_err.output
         
         if type(output) is bytes:
             output = output.decode("utf8")
-        # Parse
-        # Windows Line Parsing is with \r\n. Might not work on linux
-        for line in output.split("\r\n"):
-            if "vulnerabilities identified" in line:
-                start = True
-                st = "\x1b[31m[!]\x1b[0m "
-                ed = "vulnerabilities"
-                vuln_count = int(line[line.index(st) + len(st):line.index(ed)].strip())
-            if start:
-                tl = "Title:"
-                if tl in line:
-                    vuln_list.append(line[line.index(tl) + len(tl):].strip())
-        data.append({"vuln_found": start, "vuln_list": vuln_list, "vuln_count": vuln_count})
+        
+        output = json.loads(output)
+        for finding in output["interesting_findings"]:
+            data.append({"type": finding["type"], "description": finding["to_s"], \
+                "interesting_entries": finding["interesting_entries"]})
+
+        for finding in output["version"]["vulnerabilities"]:
+            data.append(finding)
+        
+        for finding in output["main_theme"]["vulnerabilities"]:
+            data.append(finding)
+
+        # TODO :: Add Plugins Vuln. Need to test on a site with plugins vulnable
+        # TODO :: Test on a site with vulns
         return data
 
 

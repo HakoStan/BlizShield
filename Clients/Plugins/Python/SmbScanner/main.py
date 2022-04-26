@@ -16,7 +16,7 @@ class SmbChecker:
 
     def execute(self) -> list[dict]:
         host = None
-        info = {"ip": self.__ip, "host": "", "connected": False, "shares": []}
+        info = {"ip": self.__ip, "host": "", "connected": False, "share": None, "comments": None}
 
         # Gets computer name
         try:
@@ -40,12 +40,16 @@ class SmbChecker:
             return [info]
         info["connected"] = True
 
+        info_lst = []
         shares = con.listShares(timeout=self.__timeout)
         for share in shares:
-            info["shares"].append({"name": share.name, "comments": share.comments})
+            new_info = info.copy()
+            new_info["share"] = share.name
+            new_info["comments"] = share.comments
+            info_lst.append(new_info)
 
         con.close()
-        return [info]
+        return info_lst
 
 
 def run(config: dict) -> str:
