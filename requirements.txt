@@ -4,3 +4,4 @@ requests
 urllib3
 humanfriendly
 pysmb
+windows-curses
