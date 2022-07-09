@@ -1,8 +1,0 @@
-{
-    "core": {
-        "plugins_to_run": [
-            "PortScanner"
-        ],
-        "write_mode": "File"
-    }
-}

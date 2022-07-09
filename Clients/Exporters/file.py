@@ -10,4 +10,4 @@ class FileExporter(Exporter):
 
     def export(self, results: list) -> None:
         with open(self.__path, "w") as f:
-            f.write(json.dumps(results))
+            f.write(json.dumps(results, indent=4, sort_keys=False))
