@@ -1,0 +1,34 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "SmbScanner",
+                "type": "python",
+                "name": "SmbScanMyHost",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "root",
+                    "password": "root"
+                }
+            },
+            {
+                "plugin": "SmbScanner",
+                "type": "python",
+                "name": "SmbScanFail",
+                "config": {
+                    "ip": "10.0.0.7",
+                    "username": "Blabla",
+                    "password": "1"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}

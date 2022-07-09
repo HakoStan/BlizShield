@@ -1,4 +1,5 @@
 import curses
+from doctest import OPTIONFLAGS_BY_NAME
 import logging
 import asyncio
 import json
@@ -21,6 +22,10 @@ DEFAULT_EXPORTER = {
         "path": "C:\\temp\\results.json"
     }
 }
+
+NO_CONDITION = "RUN ANYWAY"
+ONLY_IF_STATUS_TRUE = "RUN ONLY IF STATUS IS TRUE"
+ONLY_IF_STATUS_FALSE = "RUN ONLY IF STATUS IS FALSE"
 
 
 class CursesHandler(logging.Handler):
@@ -102,7 +107,7 @@ class MenuDisplay:
                 elif self.menu[current_row] == CREATE_FLOW:
                     name = self.print_create_flow()
                     if name is not None:
-                        self.flow_path = name
+                        self.flow_path = f"{name}.json"
                 elif self.menu[current_row] == PRINT_FLOW:
                     if self.flow_path is not None:
                         self.print_flow_menu()
@@ -127,6 +132,10 @@ class MenuDisplay:
         self.stdscr.getch()
         self.stdscr.refresh()
 
+    def get_plugin_config_template(self, plugin):
+        with open(f"Clients/Plugins/Python/{plugin}/config.json") as f:
+            return json.loads(f.read())
+
     def get_plugin(self, plugin):
         self.stdscr.clear()
         self.stdscr.refresh()
@@ -138,86 +147,189 @@ class MenuDisplay:
         name = self.stdscr.getstr().decode('utf8')
         pd["name"] = name
 
-        if plugin == "PortScanner":
-            self.stdscr.addstr(1, 0, "IP: ")
-            ip = self.stdscr.getstr().decode('utf8')
-            self.stdscr.addstr(2, 0, "Start Port: ")
-            start_port = int(self.stdscr.getstr().decode('utf8'))
-            self.stdscr.addstr(3, 0, "End Port: ")
-            end_port = int(self.stdscr.getstr().decode('utf8'))
-            pd["config"] = {
-                "ip": ip,
-                "start_port": start_port,
-                "end_port": end_port
-            }
-        elif plugin == "WordpressScanner":
-            self.stdscr.addstr(1, 0, "Host: ")
-            host = self.stdscr.getstr().decode('utf8')
-            self.stdscr.addstr(2, 0, "API Token: ")
-            api_token = self.stdscr.getstr().decode('utf8')
-            pd["config"] = {
-                "host": host,
-                "api_token": api_token
-            }
-        elif plugin == "SmbScanner":
-            self.stdscr.addstr(1, 0, "IP: ")
-            ip = self.stdscr.getstr().decode('utf8')
-            self.stdscr.addstr(2, 0, "Username: ")
-            username = self.stdscr.getstr().decode('utf8')
-            self.stdscr.addstr(3, 0, "Password: ")
-            password = self.stdscr.getstr().decode('utf8')
-            pd["config"] = {
-                "ip": ip,
-                "username": username,
-                "password": password
-            }
-        elif plugin == "FtpScanner":
-            self.stdscr.addstr(1, 0, "IP: ")
-            ip = self.stdscr.getstr().decode('utf8')
-            self.stdscr.addstr(2, 0, "Username: ")
-            username = self.stdscr.getstr().decode('utf8')
-            self.stdscr.addstr(3, 0, "Password: ")
-            password = self.stdscr.getstr().decode('utf8')
-            pd["config"] = {
-                "ip": ip,
-                "username": username,
-                "password": password
-            }
-        elif plugin == "HostScanner":
-            self.stdscr.addstr(1, 0, "Subnet: ")
-            subnet = self.stdscr.getstr().decode('utf8')
-            self.stdscr.addstr(2, 0, "Ports (Seperated with comma): ")
-            ports_str = self.stdscr.getstr().decode('utf8')
-            row_ports = ports_str.split(',')
-            ports = []
-            for port in row_ports:
-                ports.append(int(port.strip()))
-            pd["config"] = {
-                "subnet": subnet,
-                "possible_ports": ports
-            }
+        plugin_config_template = self.get_plugin_config_template(plugin)
+        pd["config"] = {}
+
+        idx = 1
+        for k, v in plugin_config_template.items():
+            self.stdscr.addstr(idx, 0, f"{k} :")
+            val = self.stdscr.getstr().decode('utf8')
+            pd["config"][k] = val
+            idx += 1
+
         self.stdscr.refresh()
         return pd
+
+    def get_plugins(self):
+        lst = []
+        for root, dirs, files in os.walk("Clients/Plugins/Python"):
+            for name in dirs:
+                if "pycache" in name:
+                    continue
+                lst.append(name)
+        return lst
+
+    def get_next_condition(self):
+        self.stdscr.clear()
+        self.stdscr.refresh()
+
+        next_condition_menu = [NO_CONDITION, ONLY_IF_STATUS_TRUE, ONLY_IF_STATUS_FALSE]
+        current_row = 0
+        self.print_menu(next_condition_menu, current_row)
+        self.stdscr.addstr(0, 0, "Choose next condition!\n")
+
+        while True:
+            key = self.stdscr.getch()
+
+            if key == curses.KEY_UP and current_row > 0:
+                current_row -= 1
+            elif key == curses.KEY_DOWN and current_row < len(next_condition_menu) - 1:
+                current_row += 1
+            elif key == curses.KEY_ENTER or key in [10, 13]:
+                return next_condition_menu[current_row]
+            self.print_menu(next_condition_menu, current_row)
+            self.stdscr.addstr(0, 0, "Choose next condition!\n")
+        return None
+
+    def __get_all_names_from_plugin(self, plugin):
+        names = [plugin["name"]]
+        if "next" in plugin.keys():
+            for n_plug in plugin["next"]:
+                names.extend(self.__get_all_names_from_plugin(n_plug))
+            return names
+        if "next_if_true" in plugin.keys():
+            for n_plug in plugin["next_if_true"]:
+                names.extend(self.__get_all_names_from_plugin(n_plug))
+            return names
+        if "next_if_false" in plugin.keys():
+            for n_plug in plugin["next_if_false"]:
+                names.extend(self.__get_all_names_from_plugin(n_plug))
+            return names
+        return names
+
+    def _get_all_plugins_names(self, flow):
+        plugins = []
+        for prev_plugin in flow:
+            plugins.extend(self.__get_all_names_from_plugin(prev_plugin))
+        return plugins
+
+    def add_plugin_after_plugin(self, plugin, flow):
+        self.stdscr.clear()
+        self.stdscr.refresh()
+
+        prev_plugins_names = self._get_all_plugins_names(flow)
+        current_row = 0
+        self.print_menu(prev_plugins_names, current_row)
+        self.stdscr.addstr(0, 0, "Choose after which plugin you want to run!\n")
+
+        while True:
+            key = self.stdscr.getch()
+
+            if key == curses.KEY_UP and current_row > 0:
+                current_row -= 1
+            elif key == curses.KEY_DOWN and current_row < len(prev_plugins_names) - 1:
+                current_row += 1
+            elif key == curses.KEY_ENTER or key in [10, 13]:
+                prev_plugin_name = prev_plugins_names[current_row]
+                how_to_run = self.get_next_condition()
+                for idx, prev_plugin in enumerate(flow):
+                    if prev_plugin["name"] == prev_plugin_name:
+                        if how_to_run == NO_CONDITION:
+                            if "next" in flow[idx].keys():
+                                flow[idx]["next"].append(plugin)
+                            else:
+                                flow[idx]["next"] = [plugin]
+                        elif how_to_run == ONLY_IF_STATUS_TRUE:
+                            if "next_if_true" in flow[idx].keys():
+                                flow[idx]["next_if_true"].append(plugin)
+                            else:
+                                flow[idx]["next_if_true"] = [plugin]
+                        elif how_to_run == ONLY_IF_STATUS_FALSE:
+                            if "next_if_false" in flow[idx].keys():
+                                flow[idx]["next_if_false"].append(plugin)
+                            else:
+                                flow[idx]["next_if_false"] = [plugin]
+                return flow
+            self.print_menu(prev_plugins_names, current_row)
+            self.stdscr.addstr(0, 0, "Choose after which plugin you want to run!\n")
+        return flow
+
+    def add_plugin_to_flow(self, plugin, flow):
+        self.stdscr.clear()
+        self.stdscr.refresh()
+
+        PARALLEL = "PARALLEL"
+        SEQUANTIAL = "SEQUANTIAL"
+
+        PLUGIN_ORDER_MENU = [PARALLEL, SEQUANTIAL]
+        current_row = 0
+        self.print_menu(PLUGIN_ORDER_MENU, current_row)
+        self.stdscr.addstr(0, 0, "Choose plugin order!\n")
+
+        while True:
+            key = self.stdscr.getch()
+
+            if key == curses.KEY_UP and current_row > 0:
+                current_row -= 1
+            elif key == curses.KEY_DOWN and current_row < len(PLUGIN_ORDER_MENU) - 1:
+                current_row += 1
+            elif key == curses.KEY_ENTER or key in [10, 13]:
+                order_type = PLUGIN_ORDER_MENU[current_row]
+                if order_type == PARALLEL:
+                    flow.append(plugin)
+                    return flow
+                elif order_type == SEQUANTIAL:
+                    return self.add_plugin_after_plugin(plugin, flow)
+                else:
+                    raise Exception("Bad order type")
+            self.print_menu(PLUGIN_ORDER_MENU, current_row)
+            self.stdscr.addstr(0, 0, "Choose plugin order!\n")
+        return None
+
+    def print_add_plugin_menu(self, flow):
+        self.stdscr.clear()
+        self.stdscr.refresh()
+
+        add_plugin_menu = self.get_plugins()
+        current_row = 0
+        self.print_menu(add_plugin_menu, current_row)
+        self.stdscr.addstr(0, 0, "Choose Plugin!\n")
+
+        while True:
+            key = self.stdscr.getch()
+
+            if key == curses.KEY_UP and current_row > 0:
+                current_row -= 1
+            elif key == curses.KEY_DOWN and current_row < len(add_plugin_menu) - 1:
+                current_row += 1
+            elif key == curses.KEY_ENTER or key in [10, 13]:
+                plugin_type = add_plugin_menu[current_row]
+                plugin = self.get_plugin(plugin_type)
+                flow = self.add_plugin_to_flow(plugin, flow)
+                return flow
+            self.print_menu(add_plugin_menu, current_row)
+            self.stdscr.addstr(0, 0, "Choose Plugin!\n")
+        return flow
 
     def print_create_flow(self):
         self.stdscr.clear()
         self.stdscr.refresh()
 
         flow = []
-        PLUGINS = ["FtpScanner", "HostScanner", "PortScanner", "SmbScanner", "WordpressScanner", "SAVE", "CANCEL"]
+        CREATE_FLOW_MENU = ["ADD PLUGIN", "SAVE", "CANCEL"]
         current_row = 0
+        self.print_menu(CREATE_FLOW_MENU, current_row)
+        self.stdscr.addstr(0, 0, "You are now creating a new FLOW!\n")\
 
-        self.print_menu(PLUGINS, current_row)
-        self.stdscr.addstr(0, 0, "You are now creating a new FLOW!\n")
-        while 1:
+        while True:
             key = self.stdscr.getch()
 
             if key == curses.KEY_UP and current_row > 0:
                 current_row -= 1
-            elif key == curses.KEY_DOWN and current_row < len(PLUGINS) - 1:
+            elif key == curses.KEY_DOWN and current_row < len(CREATE_FLOW_MENU) - 1:
                 current_row += 1
             elif key == curses.KEY_ENTER or key in [10, 13]:
-                f = PLUGINS[current_row]
+                f = CREATE_FLOW_MENU[current_row]
                 if f == "CANCEL":
                     if self.confirm("Are you sure you want to cancel?"):
                         break
@@ -232,29 +344,15 @@ class MenuDisplay:
                         curses.echo()
                         name = self.stdscr.getstr().decode('utf8')
                         self.stdscr.addstr(1, 0, "Saving the flow, please wait...")
-
-                        for idx, step in enumerate(flow):
-                            if idx == len(flow) - 1:
-                                break
-                            flow[idx]["next"] = flow[idx + 1]["name"]
-
-                        row = 2
-                        for step in flow:
-                            next_str = ""
-                            if "next" in step.keys():
-                                next_str = " ==> "
-                            self.stdscr.addstr(row, 0, f"{step['name']} ({step['plugin']}){next_str}")
-                            row += 1
-
                         self.stdscr.refresh()
-                        flow_str = json.dumps({"core": {"flow": flow, "exporters": [DEFAULT_EXPORTER]}})
+                        flow_str = json.dumps({"core": {"flow": flow, "exporters": [DEFAULT_EXPORTER]}}, indent=4, sort_keys=False)
                         with open(f"Clients/Data/{name}.json", "w") as fd:
                             fd.write(flow_str)
                         time.sleep(5)
                         return name
                 else:
-                    flow.append(self.get_plugin(f))
-            self.print_menu(PLUGINS, current_row)
+                    flow = self.print_add_plugin_menu(flow)
+            self.print_menu(CREATE_FLOW_MENU, current_row)
             self.stdscr.addstr(0, 0, "You are now creating a new FLOW!\n")
         return None
 

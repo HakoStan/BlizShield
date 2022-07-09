@@ -1,0 +1,34 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "PortScanner",
+                "type": "python",
+                "name": "PortScanMyHost",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "start_port": "79",
+                    "end_port": "81"
+                }
+            },
+            {
+                "plugin": "PortScanner",
+                "type": "python",
+                "name": "PortScanFail",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "start_port": "10",
+                    "end_port": "14"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "HostScanner",
+                "type": "python",
+                "name": "HostScanMyServer",
+                "config": {
+                    "subnet": "138.68.90.29",
+                    "possible_ports": "80,443"
+                }
+            },
+            {
+                "plugin": "HostScanner",
+                "type": "python",
+                "name": "HostScannerFail",
+                "config": {
+                    "subnet": "10.0.0.3",
+                    "possible_ports": "20,22"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}

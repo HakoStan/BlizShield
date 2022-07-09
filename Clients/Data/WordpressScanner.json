@@ -1,0 +1,30 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "WordpressScanner",
+                "type": "python",
+                "name": "WordpressScanMyHost",
+                "config": {
+                    "host": "138.68.90.29"
+                }
+            },
+            {
+                "plugin": "WordpressScanner",
+                "type": "python",
+                "name": "WordpressScanFail",
+                "config": {
+                    "host": "10.0.0.1"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}

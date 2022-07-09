@@ -1,0 +1,34 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "FtpScanner",
+                "type": "python",
+                "name": "FtpToServer",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "anonymous",
+                    "password": ""
+                }
+            },
+            {
+                "plugin": "FtpScanner",
+                "type": "python",
+                "name": "FtpToMyServerFail",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "admin",
+                    "password": "admin"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}

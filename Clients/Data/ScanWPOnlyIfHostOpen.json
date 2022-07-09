@@ -1,0 +1,33 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "HostScanner",
+                "type": "python",
+                "name": "ScanSite",
+                "config": {
+                    "subnet": "138.68.90.29",
+                    "possible_ports": "80,443"
+                },
+                "next_if_true": [
+                    {
+                        "plugin": "WordpressScanner",
+                        "type": "python",
+                        "name": "ScanWP",
+                        "config": {
+                            "host": "138.68.90.29"
+                        }
+                    }
+                ]
+            }
+        ],
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}

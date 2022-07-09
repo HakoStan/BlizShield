@@ -16,7 +16,7 @@ class SmbChecker:
 
     def execute(self) -> list[dict]:
         host = None
-        info = {"ip": self.__ip, "host": "", "connected": False, "share": None, "comments": None}
+        info = {"ip": self.__ip, "host": "", "connected": False, "status": False, "share": None, "comments": None}
 
         # Gets computer name
         try:
@@ -39,6 +39,7 @@ class SmbChecker:
             logger.error(f"{str(ex)}")
             return [info]
         info["connected"] = True
+        info["status"] = True
 
         info_lst = []
         shares = con.listShares(timeout=self.__timeout)

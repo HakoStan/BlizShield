@@ -1,0 +1,32 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "TcpScanner",
+                "type": "python",
+                "name": "TcpScanMyHost",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "port": "80"
+                }
+            },
+            {
+                "plugin": "TcpScanner",
+                "type": "python",
+                "name": "TcpScanFail",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "port": "81"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}
