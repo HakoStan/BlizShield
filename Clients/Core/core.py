@@ -5,6 +5,7 @@ import os
 import importlib.machinery
 import importlib.util
 import asyncio
+from threading import Thread
 
 from ..Framework import utils
 from ..Exporters.elastic import ElasticExporter
@@ -38,7 +39,7 @@ class Core:
         self.__flow = flow
         self.__results = []
 
-    async def __run_python_plugin(self,
+    def __run_python_plugin(self,
         name: str,
         config: dict = {}):
         plugins_dir = utils.get_plugins_dir("python")
@@ -57,7 +58,7 @@ class Core:
         for exporter in self.__exporters:
             exporter.export(results)
 
-    async def __run_plugin(self, plugin: dict) -> dict:
+    def __run_plugin(self, plugin: dict) -> dict:
         if "type" not in plugin.keys() or "name" not in plugin.keys() or "plugin" not in plugin.keys():
             raise ValueError("Plugin Descriptor Should Contain 'name', 'type' and 'plugin' fields")
         plugin_type = plugin["type"].lower()
@@ -68,9 +69,9 @@ class Core:
         if plugin_type == "python":
             if "config" in plugin.keys():
                 result["Config"] = plugin["config"]
-                result["Result"] = await self.__run_python_plugin(plugin["plugin"], plugin["config"])
+                result["Result"] = self.__run_python_plugin(plugin["plugin"], plugin["config"])
             else:
-                result["Result"] = await self.__run_python_plugin(plugin["plugin"])
+                result["Result"] = self.__run_python_plugin(plugin["plugin"])
 
         self.__results.append(result)
 
@@ -97,16 +98,16 @@ class Core:
                     self.__run_plugin(next_plugin)
 
     async def run(self) -> None:
-        coros = []
+        threads = []
         for plugin in self.__flow:
             if not plugin:
                 break
-            coros.append(self.__run_plugin(plugin))
-        done, pending = await asyncio.wait(coros)
-        for tsk in done:
-            try:
-                await tsk
-            except Exception as e:
-                print("Exception raised in one of the tasks:", repr(e))
+            threads.append(Thread(target=self.__run_plugin, args=(plugin,)))
+
+        for t in threads:
+            t.start()
+
+        for t in threads:
+            t.join()
         logger.info("Exporting all results")
         await self.__export_results(self.__results)

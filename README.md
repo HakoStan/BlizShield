@@ -17,3 +17,4 @@ pass: Sup3rSecretPassword
 WPScan API KEY - fH62Oxk9nhwtADF9fiEaoSaaIJi1hcEbG2688C2dctk
 ```
 4. On windows you'll also need libcurl.dll
+5. put in the env variable the API KEY and name it BLIZSHIELD_WORDPRESS_PLUGIN_API_KEY

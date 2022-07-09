@@ -69,5 +69,5 @@ class PortScanner:
 
 def run(config: dict) -> str:
     logger.info("PortScanner Starting")
-    port_scanner = PortScanner(config["ip"], config["start_port"], config["end_port"])
+    port_scanner = PortScanner(config["ip"], int(config["start_port"]), int(config["end_port"]))
     return port_scanner.execute()

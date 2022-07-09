@@ -107,7 +107,7 @@ class MenuDisplay:
                 elif self.menu[current_row] == CREATE_FLOW:
                     name = self.print_create_flow()
                     if name is not None:
-                        self.flow_path = name
+                        self.flow_path = f"{name}.json"
                 elif self.menu[current_row] == PRINT_FLOW:
                     if self.flow_path is not None:
                         self.print_flow_menu()
@@ -244,7 +244,6 @@ class MenuDisplay:
                                 flow[idx]["next_if_true"].append(plugin)
                             else:
                                 flow[idx]["next_if_true"] = [plugin]
-                            flow[idx]["next_if_true"] = plugin
                         elif how_to_run == ONLY_IF_STATUS_FALSE:
                             if "next_if_false" in flow[idx].keys():
                                 flow[idx]["next_if_false"].append(plugin)

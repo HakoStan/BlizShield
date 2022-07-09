@@ -1,0 +1,32 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "UdpScanner",
+                "type": "python",
+                "name": "UdpScanMyHost",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "port": "22"
+                }
+            },
+            {
+                "plugin": "UdpScanner",
+                "type": "python",
+                "name": "UdpScanFail",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "port": "57"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}
