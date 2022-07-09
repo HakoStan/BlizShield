@@ -5,6 +5,7 @@ import json
 import time
 import os
 import json
+import time
 from Clients import __main__ as clients
 from Clients.Framework import utils
 
@@ -313,8 +314,14 @@ class MenuDisplay:
                 self.stdscr.refresh()
                 self.stdscr.addstr("Exception Raised While Running The Flow!")
 
-        self.stdscr.addstr("\nFinished!!!")
-        self.stdscr.addstr("\nPress any key to continue.")
+        time.sleep(3)
+        self.stdscr.clear()
+        self.stdscr.refresh()
+        try:
+            self.stdscr.addstr("\nFinished!!!")
+            self.stdscr.addstr("\nPress any key to continue.")
+        except:
+            pass
         self.stdscr.getch()
 
     def print_menu(self, menu, selected_row_idx):
