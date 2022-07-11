@@ -18,4 +18,5 @@
    def run(config: dict) -> list[dict]
    ```
    The method should be called run, get a config dict and return a list of results as a list of dictionaries.
+   4. Suggestion - add a "status" key to the each result dict.
 4. After adding this files, implement the logic of your plugin and you are good to go.
