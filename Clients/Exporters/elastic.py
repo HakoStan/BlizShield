@@ -4,6 +4,7 @@ import elasticsearch
 from elasticsearch import helpers
 
 from .exporter import Exporter
+from ..Framework.utils import SingletonID
 
 
 class ElasticExporter(Exporter):
@@ -11,6 +12,7 @@ class ElasticExporter(Exporter):
         super().__init__()
         self.__ip = ip
         self.__port = port
+        self.run_id = SingletonID().id
 
     def __results_gen(self, results: list) -> dict:
         for result in results:
@@ -27,6 +29,7 @@ class ElasticExporter(Exporter):
                     'plugin_type': plugin_type,
                     'run_config': plugin_config,
                     '@timestamp': scan_timestamp,
+                    'run_id': self.run_id,
                     **scan
                 }
 
