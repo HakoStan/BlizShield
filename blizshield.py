@@ -17,9 +17,10 @@ CREATE_FLOW = "CREATE FLOW"
 PRINT_FLOW = "PRINT FLOW"
 MENU = [RUN, LOAD, CREATE_FLOW, PRINT_FLOW, EXIT]
 DEFAULT_EXPORTER = {
-    "type": "file",
+    "type": "elastic",
     "config": {
-        "path": "C:\\temp\\results.json"
+        "ip": "rabinovit.ch",
+        "port": 9200
     }
 }
 

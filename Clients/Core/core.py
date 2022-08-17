@@ -56,7 +56,10 @@ class Core:
 
     async def __export_results(self, results: list) -> None:
         for exporter in self.__exporters:
-            exporter.export(results)
+            try:
+                exporter.export(results)
+            except Exception as e:
+                logger.error(e)
 
     def __run_plugin(self, plugin: dict) -> dict:
         if "type" not in plugin.keys() or "name" not in plugin.keys() or "plugin" not in plugin.keys():
