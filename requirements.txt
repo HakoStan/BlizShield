@@ -5,3 +5,4 @@ urllib3
 humanfriendly
 pysmb
 windows-curses
+docker

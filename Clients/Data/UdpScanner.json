@@ -21,6 +21,13 @@
             }
         ],
         "exporters": [
+		    {
+                "type": "elastic",
+                "config": {
+                    "ip": "rabinovit.ch",
+                    "port": 9200
+                }
+            },
             {
                 "type": "file",
                 "config": {
