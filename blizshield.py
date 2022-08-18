@@ -5,7 +5,7 @@ import os
 import json
 import time
 from Clients import __main__ as clients
-from Clients import utils
+from Clients.Framework import utils
 
 EXIT = " EXIT"
 RUN = "RUN"
