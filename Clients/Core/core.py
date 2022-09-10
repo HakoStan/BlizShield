@@ -23,10 +23,12 @@ ALLOWED_CONDITION_TYPE = ["eq", "gt", "ge", "lt", "le"]
 class Core:
     def __init__(self,
         client: str,
+        tester: str,
         flow: list[dict],
         exporters: list) -> None:
         logger.info("Initiating Core")
         self.client = client
+        self.tester = tester
         self.__exporters = []
         # Initialize Exporters
         for exporter in exporters:
@@ -69,7 +71,7 @@ class Core:
         if plugin_type not in ALLOWED_TYPES:
             raise ValueError(f"Plugin Type {plugin_type} is not allowed")
 
-        result = {"Plugin": plugin["plugin"], "Type": plugin_type, "Name": plugin["name"], "Client": self.client}
+        result = {"Plugin": plugin["plugin"], "Type": plugin_type, "Name": plugin["name"], "Client": self.client, "Tester": self.tester}
         if plugin_type == "python":
             if "config" in plugin.keys():
                 result["Config"] = plugin["config"]

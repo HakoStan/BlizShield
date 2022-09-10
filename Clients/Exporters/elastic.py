@@ -21,6 +21,7 @@ class ElasticExporter(Exporter):
             plugin_type = result['Type']
             plugin_config = result['Config']
             run_client = result['Client']
+            run_tester = result['Tester']
             print('fuckfuck')
             for scan in result['Result']:
                 yield {
@@ -33,6 +34,7 @@ class ElasticExporter(Exporter):
                     '@timestamp': scan_timestamp,
                     'run_id': self.run_id,
                     'client': run_client,
+                    'tester': run_tester,
                     **scan
                 }
 

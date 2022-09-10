@@ -86,7 +86,7 @@ class MenuDisplay:
         current_row = 0
         
         # get uid from user
-        self.uid = self.get_user()
+        self.uid, self.tester = self.get_user()
         
         # print the menu
         self.print_menu(self.menu, current_row)
@@ -407,6 +407,7 @@ class MenuDisplay:
         else:
             config = json.load(open(utils.get_data_file_path(self.flow_path)))
             config['core']['client'] = self.uid
+            config['core']['tester'] = self.tester
             try:
                 loop.run_until_complete(clients.run_core(config))
             except:
@@ -504,9 +505,13 @@ class MenuDisplay:
 
     def get_user(self):
         curses.echo()   
-        self.stdscr.addstr(0, 0, "Please enter user id: ")
+        self.stdscr.addstr(0, 0, "Please enter client name: ")
         uid = self.stdscr.getstr().decode('utf8')
-        return uid
+        self.stdscr.clear()
+        self.stdscr.refresh()
+        self.stdscr.addstr(0, 0, "Please enter tester name: ")
+        tester = self.stdscr.getstr().decode('utf8')
+        return uid, tester
         
 if __name__ == "__main__":
     MenuDisplay(MENU)
