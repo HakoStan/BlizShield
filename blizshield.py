@@ -84,7 +84,10 @@ class MenuDisplay:
 
         # specify the current selected row
         current_row = 0
-
+        
+        # get uid from user
+        self.uid = self.get_user()
+        
         # print the menu
         self.print_menu(self.menu, current_row)
 
@@ -498,6 +501,11 @@ class MenuDisplay:
         self.stdscr.addstr(y, x, text)
         self.stdscr.refresh()
 
-
+    def get_user(self):
+        curses.echo()   
+        self.stdscr.addstr(0, 0, "Please enter user id: ")
+        uid = self.stdscr.getstr().decode('utf8')
+        return uid
+        
 if __name__ == "__main__":
     MenuDisplay(MENU)
