@@ -406,6 +406,7 @@ class MenuDisplay:
             self.stdscr.addstr("You didn't load any flow file\n")
         else:
             config = json.load(open(utils.get_data_file_path(self.flow_path)))
+            config['core']['client'] = self.uid
             try:
                 loop.run_until_complete(clients.run_core(config))
             except:

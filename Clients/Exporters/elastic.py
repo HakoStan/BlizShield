@@ -20,6 +20,8 @@ class ElasticExporter(Exporter):
             plugin_data = result['Plugin']
             plugin_type = result['Type']
             plugin_config = result['Config']
+            run_client = result['Client']
+            print('fuckfuck')
             for scan in result['Result']:
                 yield {
                     '_index': f'plugin-{plugin_data.lower()}-{datetime.datetime.now().strftime("%m-%y")}',
@@ -30,6 +32,7 @@ class ElasticExporter(Exporter):
                     'run_config': plugin_config,
                     '@timestamp': scan_timestamp,
                     'run_id': self.run_id,
+                    'client': run_client,
                     **scan
                 }
 
