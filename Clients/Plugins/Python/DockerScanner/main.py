@@ -6,34 +6,29 @@ import os
 logger = logging.getLogger(__name__.split('.')[-1])
 
 class DockerScanner:
-    def __init__(self, docker_name: str, command: str, container_path: str) -> None:
-        self.__command = command
+    def __init__(self, docker_name: str, command: str) -> None:
+        self.__command = command.split(' ')
         self.__docker_name = docker_name
-        self.__container_path = container_path
         self.__client = docker.from_env()
 
-    def execute(self) -> list[dict]:
-        image = self.__client.images.pull(self.__docker_name)
-
-        # ensure unique local output filename
-        scan_timestamp = datetime.datetime.now(datetime.timezone.utc).astimezone().isoformat()
-
-        container = self.__client.containers.run(image=image,
-                                                 command=self.__command,
-                                                 volumes={scan_timestamp:
-                                                              {'bind': self.__container_path, 'mode': 'rw'}})
-
+    def execute(self, expr) -> list[dict]:
+        try:
+            image = self.__client.images.get(self.__docker_name)
+            res = self.__client.containers.run(image=image, command=self.__command)
+        except Exception as ex:
+            logger.error(f"Exception Occurred using docker {self.docker_name} with {self.command}")
+            logger.error(f"{str(ex)}")
+        
+        is_vuln = False
         docker_info = []
-        with open(scan_timestamp, "r") as res:
-            for line in res:
-                res_list = line.split(',')
-                docker_info.append({"docker_name": self.__docker_name, "ip": res_list[0],
-
-                                    "port": res_list[1], "status": res_list[2],"@timestamp": scan_timestamp })
-        os.remove(scan_timestamp)
+        
+        if expr in str(res):
+            is_vuln = True
+            
+        docker_info.append({"docker_name": self.__docker_name, "is_vunl": is_vuln})
         return docker_info
 
 def run(config: dict) -> str:
     logger.info("DockerScanner Starting")
-    docker_scanner = DockerScanner(config["dockerName"], config["command"], config["container_path"])
-    return docker_scanner.execute()
+    docker_scanner = DockerScanner(config["dockerName"], config["command"])
+    return docker_scanner.execute(config["vuln_expression"])
