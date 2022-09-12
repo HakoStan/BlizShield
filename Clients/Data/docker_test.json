@@ -1,0 +1,25 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "DockerScanner",
+                "type": "python",
+                "name": "docker_plugin",
+                "config": {
+                    "dockerName": "log4j",
+                    "command": "-u http://192.168.27.6:8000/ --disable-tls-to-register-dns",
+                    "vuln_expression": "Apache"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "elastic",
+                "config": {
+                    "ip": "rabinovit.ch",
+                    "port": 9200
+                }
+            }
+        ]
+    }
+}
