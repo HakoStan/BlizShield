@@ -85,6 +85,9 @@ class Core:
             for next_plugin in plugin["next"]:
                 self.__run_plugin(next_plugin)
 
+        if result["Plugin"] == "DockerScanner":
+            result["Plugin"] = f"{result['Name']}-{result['Plugin']}"
+
         run_next_if_true = False
         run_next_if_false = False
         for res in result["Result"]:

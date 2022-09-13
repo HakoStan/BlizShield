@@ -4,7 +4,7 @@
             {
                 "plugin": "DockerScanner",
                 "type": "python",
-                "name": "docker_plugin",
+                "name": "log4j",
                 "config": {
                     "dockerName": "log4j",
                     "command": "-u http://192.168.195.224:8000/ --disable-tls-to-register-dns",
