@@ -7,7 +7,7 @@
                 "name": "docker_plugin",
                 "config": {
                     "dockerName": "log4j",
-                    "command": "-u http://192.168.27.6:8000/ --disable-tls-to-register-dns",
+                    "command": "-u http://192.168.195.224:8000/ --disable-tls-to-register-dns",
                     "vuln_expression": "Apache"
                 }
             }
