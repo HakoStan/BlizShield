@@ -1,0 +1,170 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "FtpScanner",
+                "type": "python",
+                "name": "FtpToServer",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "anonymous",
+                    "password": ""
+                }
+            },
+            {
+                "plugin": "FtpScanner",
+                "type": "python",
+                "name": "FtpToMyServerFail",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "admin",
+                    "password": "admin"
+                }
+            },
+            {
+                "plugin": "HostScanner",
+                "type": "python",
+                "name": "HostScanMyServer",
+                "config": {
+                    "subnet": "138.68.90.29",
+                    "possible_ports": "80,443"
+                }
+            },
+            {
+                "plugin": "HostScanner",
+                "type": "python",
+                "name": "HostScannerFail",
+                "config": {
+                    "subnet": "10.0.0.3",
+                    "possible_ports": "20,22"
+                }
+            },
+            {
+                "plugin": "PortScanner",
+                "type": "python",
+                "name": "PortScanMyHost",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "start_port": "79",
+                    "end_port": "81"
+                }
+            },
+            {
+                "plugin": "PortScanner",
+                "type": "python",
+                "name": "PortScanFail",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "start_port": "10",
+                    "end_port": "14"
+                }
+            },
+            {
+                "plugin": "HostScanner",
+                "type": "python",
+                "name": "ScanSite",
+                "config": {
+                    "subnet": "138.68.90.29",
+                    "possible_ports": "80,443"
+                },
+                "next_if_true": [
+                    {
+                        "plugin": "WordpressScanner",
+                        "type": "python",
+                        "name": "ScanWP",
+                        "config": {
+                            "host": "138.68.90.29"
+                        }
+                    }
+                ]
+            },
+            {
+                "plugin": "SmbScanner",
+                "type": "python",
+                "name": "SmbScanMyHost",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "username": "root",
+                    "password": "root"
+                }
+            },
+            {
+                "plugin": "SmbScanner",
+                "type": "python",
+                "name": "SmbScanFail",
+                "config": {
+                    "ip": "10.0.0.7",
+                    "username": "Blabla",
+                    "password": "1"
+                }
+            },
+            {
+                "plugin": "TcpScanner",
+                "type": "python",
+                "name": "TcpScanMyHost",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "port": "80"
+                }
+            },
+            {
+                "plugin": "TcpScanner",
+                "type": "python",
+                "name": "TcpScanFail",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "port": "81"
+                }
+            },
+            {
+                "plugin": "UdpScanner",
+                "type": "python",
+                "name": "UdpScanMyHost",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "port": "22"
+                }
+            },
+            {
+                "plugin": "UdpScanner",
+                "type": "python",
+                "name": "UdpScanFail",
+                "config": {
+                    "ip": "138.68.90.29",
+                    "port": "57"
+                }
+            },
+            {
+                "plugin": "WordpressScanner",
+                "type": "python",
+                "name": "WordpressScanMyHost",
+                "config": {
+                    "host": "138.68.90.29"
+                }
+            },
+            {
+                "plugin": "WordpressScanner",
+                "type": "python",
+                "name": "WordpressScanFail",
+                "config": {
+                    "host": "10.0.0.1"
+                }
+            }
+        ],
+        "exporters": [
+		    {
+                "type": "elastic",
+                "config": {
+                    "ip": "rabinovit.ch",
+                    "port": 9200
+                }
+            },
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}

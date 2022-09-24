@@ -1,0 +1,35 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "DockerScanner",
+                "type": "python",
+                "name": "log4j",
+                "config": {
+                    "dockerName": "log4j",
+                    "command": "-u http://rabinovit.ch:9200/ --disable-tls-to-register-dns",
+                    "vuln_expression": "Affected"
+                }
+            },
+            {
+                "plugin": "DockerScanner",
+                "type": "python",
+                "name": "log4j",
+                "config": {
+                    "dockerName": "log4j",
+                    "command": "-u http://172.30.16.1:9200/ --disable-tls-to-register-dns",
+                    "vuln_expression": "Targets"
+                }
+            }
+        ],
+        "exporters": [
+            {
+                "type": "elastic",
+                "config": {
+                    "ip": "rabinovit.ch",
+                    "port": 9200
+                }
+            }
+        ]
+    }
+}

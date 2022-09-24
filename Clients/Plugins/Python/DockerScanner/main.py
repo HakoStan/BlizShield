@@ -12,7 +12,7 @@ class DockerScanner:
         self.__docker_name = docker_name
         self.__client = docker.from_env()
 
-    def execute(self, expr) -> list[dict]:
+    def execute(self, expr: str) -> list[dict]:
         res = None
         try:
             image = self.__client.images.get(self.__docker_name)
@@ -24,7 +24,7 @@ class DockerScanner:
         is_vuln = False
         docker_info = []
         if res:
-            if expr in str(res):
+            if expr.lower() in str(res).lower():
                 is_vuln = True
 
         docker_info.append({"docker_name": self.__docker_name, "is_vunl": is_vuln, "status": is_vuln})

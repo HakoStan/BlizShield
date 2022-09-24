@@ -1,0 +1,42 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "HostScanner",
+                "type": "python",
+                "name": "ScanSite",
+                "config": {
+                    "subnet": "rabinovit.ch",
+                    "possible_ports": "9200"
+                },
+                "next_if_true": [
+                    {
+                        "plugin": "DockerScanner",
+                        "type": "python",
+                        "name": "log4j",
+                        "config": {
+                            "dockerName": "log4j",
+                            "command": "-u http://rabinovit.ch:9200/ --disable-tls-to-register-dns",
+                            "vuln_expression": "Affected"
+                        }
+                    }
+                ]
+            }
+        ],
+        "exporters": [
+		    {
+                "type": "elastic",
+                "config": {
+                    "ip": "rabinovit.ch",
+                    "port": 9200
+                }
+            },
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "core": {
+        "flow": [
+            {
+                "plugin": "DockerScanner",
+                "type": "python",
+                "name": "log4j",
+                "config": {
+                    "dockerName": "log4j",
+                    "command": "-u http://rabinovit.ch:9200/ --disable-tls-to-register-dns",
+                    "vuln_expression": "Affected"
+                },
+                "next_if_false": [
+                    {
+                        "plugin": "WordpressScanner",
+                        "type": "python",
+                        "name": "ScanWP",
+                        "config": {
+                            "host": "http://rabinovit.ch"
+                        }
+                    }
+                ]
+            }
+        ],
+        "exporters": [
+		    {
+                "type": "elastic",
+                "config": {
+                    "ip": "rabinovit.ch",
+                    "port": 9200
+                }
+            },
+            {
+                "type": "file",
+                "config": {
+                    "path": "C:\\temp\\results.json"
+                }
+            }
+        ]
+    }
+}
